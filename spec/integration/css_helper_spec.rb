@@ -14,6 +14,14 @@ describe Premailer::Rails::CSSHelper do
     Premailer::Rails::CSSHelper.css_for_doc(doc)
   end
 
+  def file_loader
+    if Premailer::Rails::CSSLoaders::PropshaftLoader.propshaft_present?
+      Premailer::Rails::CSSLoaders::PropshaftLoader
+    else
+      Premailer::Rails::CSSLoaders::AssetPipelineLoader
+    end
+  end
+
   def expect_file(path, content='file content')
     path = "#{Rails.root}/#{path}"
     allow(File).to receive(:file?).with(path).and_return(true)
@@ -113,55 +121,21 @@ describe Premailer::Rails::CSSHelper do
         end
       end
 
-      context "when find_sources raises TypeError" do
-        let(:response) { 'content of base.css' }
-        let(:uri) { URI('http://example.com/assets/base.css') }
-
-        it "falls back to Net::HTTP" do
-          expect(Rails.application.assets_manifest).to \
-            receive(:find_sources)
-              .with('base.css')
-              .and_raise(TypeError)
-
-          allow(Net::HTTP).to \
-            receive(:get).with(uri).and_return(response)
-          expect(css_for_url('http://example.com/assets/base.css')).to \
-            eq(response)
-        end
-      end
-
-      context "when find_sources raises Errno::ENOENT" do
-        let(:response) { 'content of base.css' }
-        let(:uri) { URI('http://example.com/assets/base.css') }
-
-        it "falls back to Net::HTTP" do
-          expect(Rails.application.assets_manifest).to \
-            receive(:find_sources)
-              .with('base.css')
-              .and_raise(Errno::ENOENT)
-
-          allow(Net::HTTP).to \
-            receive(:get).with(uri).and_return(response)
-          expect(css_for_url('http://example.com/assets/base.css')).to \
-            eq(response)
-        end
-      end
-
       it 'returns the content of the file compiled by Rails' do
-        expect(Rails.application.assets_manifest).to \
-          receive(:find_sources)
-            .with('base.css')
-            .and_return(['content of base.css'])
+        expect(file_loader).to \
+          receive(:load)
+            .with('http://example.com/assets/base.css')
+            .and_return('content of base.css')
 
         expect(css_for_url('http://example.com/assets/base.css')).to \
           eq('content of base.css')
       end
 
       it 'returns same file when path contains file fingerprint' do
-        expect(Rails.application.assets_manifest).to \
-          receive(:find_sources)
-            .with('base.css')
-            .and_return(['content of base.css'])
+        expect(file_loader).to \
+          receive(:load)
+            .with('http://example.com/assets/base-089e35bd5d84297b8d31ad552e433275.css')
+            .and_return('content of base.css')
 
         expect(css_for_url(
           'http://example.com/assets/base-089e35bd5d84297b8d31ad552e433275.css'
@@ -175,8 +149,8 @@ describe Premailer::Rails::CSSHelper do
         let(:asset_host) { 'http://assets.example.com' }
 
         before do
-          allow(Rails.application.assets_manifest).to \
-            receive(:find_sources).and_return([])
+          allow(file_loader).to \
+            receive(:load).and_return(nil)
 
           config = double(asset_host: asset_host)
           allow(Rails.configuration).to \

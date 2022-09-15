@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gemspec
 
-rails_version = ENV.fetch('ACTION_MAILER_VERSION', '5')
+rails_version = ENV.fetch('ACTION_MAILER_VERSION', '6')
 
 if rails_version == 'master'
   git 'git://github.com/rails/rails.git' do
@@ -18,6 +18,7 @@ else
 end
 
 gem 'byebug'
+gem 'net-smtp', require: false
 
 # platforms :rbx do
 #   gem 'rubysl'

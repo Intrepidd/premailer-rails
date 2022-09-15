@@ -2,7 +2,6 @@
 
 CSS styled emails without the hassle.
 
-[![Build Status][build-image]][build-link]
 [![Gem Version][gem-image]][gem-link]
 [![Code Climate][gpa-image]][gpa-link]
 [![Coverage Status][cov-image]][cov-link]
@@ -161,8 +160,7 @@ Philipe Fatio ([@fphilipe][fphilipe twitter])
 
 premailer-rails is released under the MIT license. See the [license file].
 
-[build-image]: https://travis-ci.org/fphilipe/premailer-rails.svg
-[build-link]:  https://travis-ci.org/fphilipe/premailer-rails
+
 [gem-image]:   https://badge.fury.io/rb/premailer-rails.svg
 [gem-link]:    https://rubygems.org/gems/premailer-rails
 [gpa-image]:   https://codeclimate.com/github/fphilipe/premailer-rails.svg
