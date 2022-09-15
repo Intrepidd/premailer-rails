@@ -70,7 +70,7 @@ production.
 Simply add the gem to your `Gemfile`:
 
 ```ruby
-gem 'premailer-rails'
+gem 'premailer-rails-revived', require: "premailer/rails"
 ```
 
 premailer-rails and premailer require a gem that is used to parse the email's
