@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.12.0
+- Fork and revive this gem
+- Test on github actions rather than travis
+- Add support for rails 7 and propshaft
+
 ## v1.11.1
 
 - Check if `Rails.application` is defined (@pabloh, #250)
